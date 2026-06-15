@@ -1,0 +1,127 @@
+
+JAVA / SPRING BACKEND LEARNING ROADMAP
+
+PHASE 1 – JAVA FUNDAMENTALS
+- Java Core
+- OOP
+- Collections Framework
+- Exception Handling
+- Streams API
+- Generics
+- Design Patterns
+
+PHASE 2 – SPRING BOOT FUNDAMENTALS
+- Spring Boot
+- Dependency Injection (DI)
+- Controllers
+- Services
+- Repositories
+- Configuration
+- Maven
+
+PHASE 3 – REST APIs
+- REST Architecture
+- CRUD Operations
+- DTOs
+- Validation
+- Exception Handling
+- OpenAPI / Swagger
+
+PHASE 4 – DATABASES
+- SQL
+- PostgreSQL
+- Database Design
+- Indexes
+- Joins
+- Transactions
+
+PHASE 5 – JPA / HIBERNATE
+- Entities
+- OneToOne
+- OneToMany
+- ManyToOne
+- ManyToMany
+- Lazy vs Eager Loading
+- JPQL
+
+PHASE 6 – SECURITY
+- Spring Security
+- Authentication
+- Authorization
+- JWT
+- BCrypt
+- Roles & Permissions
+
+PHASE 7 – DEVELOPMENT TOOLS
+- Git
+- GitHub
+- IntelliJ IDEA
+- Maven
+
+PHASE 8 – DOCKER
+- Docker Basics
+- Dockerfile
+- Docker Compose
+
+PHASE 9 – TESTING
+- JUnit
+- Integration Testing
+- Mockito
+
+PHASE 10 – CI/CD
+- GitHub Actions
+- Automated Testing
+- Deployment Pipelines
+
+PHASE 11 – MICROSERVICES
+- Microservice Architecture
+- API Gateway
+- Service Discovery
+
+PHASE 12 – CLOUD
+- AWS Basics
+- Azure Basics
+
+MOST REQUESTED SKILLS IN JOB ADS
+
+ESSENTIAL
+- Java
+- Spring Boot
+- REST APIs
+- SQL
+- PostgreSQL
+- JPA / Hibernate
+- Git
+
+VERY VALUABLE
+- Spring Security
+- JWT
+- Docker
+- Testing
+- CI/CD
+- Microservices
+
+NICE TO HAVE
+- AWS
+- Azure
+- Kubernetes
+- OpenShift
+- GraphQL
+- WebSockets
+
+UNIVERSITY SECURITY PROJECT GOAL
+
+Build a Spring Boot backend demonstrating:
+- REST APIs
+- PostgreSQL
+- JPA/Hibernate
+- Spring Security
+- JWT Authentication
+- Role-Based Access Control
+- Business Logic
+- Docker
+- Testing
+- Clean Architecture
+
+Target Role:
+Junior Java / Spring Boot Backend Developer
