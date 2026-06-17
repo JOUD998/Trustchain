@@ -1,10 +1,10 @@
 package com.joud.trustchain.user;
 
+import com.joud.trustchain.security.JwtService;
 import com.joud.trustchain.user.dto.CreateUserRequest;
 import com.joud.trustchain.user.dto.UpdateUserRequest;
 import com.joud.trustchain.user.dto.UserResponse;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,10 +12,11 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, JwtService jwtService) {
         this.userRepository = userRepository;
-
+        this.jwtService = jwtService;
     }
 
     private UserResponse mapToUserResponse(User user) {
@@ -68,7 +69,7 @@ public class UserService {
                 .password(request.getPassword())
                 .role(Role.CUSTOMER)
                 .build();
-        user =  userRepository.save(user);
+        user = userRepository.save(user);
         UserResponse userResponse = mapToUserResponse(user);
         return userResponse;
     }
@@ -89,12 +90,18 @@ public class UserService {
             user.setEmail(request.getEmail());
         }
 
-//        user = userRepository.save(user);
-//        UserResponse userResponse = mapToUserResponse(user);
-//        return userResponse;
 
         return mapToUserResponse(userRepository.save(user));
     }
+
+
+    public UserResponse getCurrentUser(String token) {
+
+        Long userId = jwtService.extractUserId(token);
+        return findUserById(userId);
+
+    }
+
 
 
 }

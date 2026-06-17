@@ -5,7 +5,6 @@ import com.joud.trustchain.user.dto.UpdateUserRequest;
 import com.joud.trustchain.user.dto.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -41,5 +40,14 @@ public class UserController {
     public UserResponse updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
         return userService.updateUser(id,request);
 
+    }
+
+    @GetMapping("/me")
+    public UserResponse getCurrentUser(
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        return userService.getCurrentUser(token);
     }
 }

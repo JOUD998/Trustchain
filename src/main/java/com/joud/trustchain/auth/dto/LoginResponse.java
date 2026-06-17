@@ -1,4 +1,6 @@
-package com.joud.trustchain.user.dto;
+package com.joud.trustchain.auth.dto;
+
+import com.joud.trustchain.user.dto.UserResponse;
 
 public class LoginResponse {
 

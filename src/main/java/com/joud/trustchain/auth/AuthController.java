@@ -1,8 +1,9 @@
-package com.joud.trustchain.user.auth;
+package com.joud.trustchain.auth;
 
 
-import com.joud.trustchain.user.dto.LoginRequest;
-import com.joud.trustchain.user.dto.LoginResponse;
+import com.joud.trustchain.auth.dto.LoginRequest;
+import com.joud.trustchain.auth.dto.LoginResponse;
+import com.joud.trustchain.auth.dto.RegisterRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,5 +24,10 @@ public class AuthController {
     @PostMapping("/login")
     public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest){
         return authService.login(loginRequest);
+    }
+
+    @PostMapping("/register")
+    public LoginResponse register(@Valid @RequestBody RegisterRequest request) {
+        return authService.register(request);
     }
 }

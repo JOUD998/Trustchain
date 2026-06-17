@@ -1,4 +1,4 @@
-package com.joud.trustchain.user.dto;
+package com.joud.trustchain.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
