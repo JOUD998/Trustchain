@@ -5,4 +5,7 @@ import java.util.List;
 
 public interface CampaignRepository extends JpaRepository<Campaign,Long> {
 
+
+
+
 }
