@@ -1,3 +1,0 @@
-DTOs definieren den Vertrag zwischen dem Client und der Anwendung.
-
-Sie legen fest, welche Felder vom Client gesendet werden dürfen, und ermöglichen eine Validierung, bevor die Anfrage die Business-Logic-Schicht erreicht.
