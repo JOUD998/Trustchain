@@ -1,6 +1,4 @@
 package com.joud.trustchain.campaign.dto;
-
-import com.joud.trustchain.campaign.CampaignStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
