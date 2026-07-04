@@ -23,7 +23,6 @@ public class CampaignController {
     @GetMapping
     public List<CampaignResponse> getAllCampaign(){
       return   campaignService.getAllCampaigns();
-
     }
 
 

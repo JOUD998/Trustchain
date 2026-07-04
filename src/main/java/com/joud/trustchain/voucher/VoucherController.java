@@ -1,5 +1,4 @@
 package com.joud.trustchain.voucher;
-
 import com.joud.trustchain.voucher.dto.CreateVoucherRequest;
 import com.joud.trustchain.voucher.dto.VerifyVoucherResponse;
 import com.joud.trustchain.voucher.dto.VoucherResponse;

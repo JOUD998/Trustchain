@@ -1,10 +1,8 @@
 package com.joud.trustchain.campaign;
-
 import com.joud.trustchain.campaign.dto.CampaignResponse;
 import com.joud.trustchain.campaign.dto.CreateCampaignRequest;
 import com.joud.trustchain.campaign.dto.UpdateCampaignRequest;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +89,12 @@ public class CampaignService {
         return mapToCampaignResponse(campaign);
     }
 
+
+    public void deleteCampaign(Long id) {
+        findCampaignEntityById(id);
+        campaignRepository.deleteById(id);
+    }
+
     private CampaignResponse mapToCampaignResponse(Campaign campaign) {
         CampaignResponse campaignResponse = new CampaignResponse();
         campaignResponse.setId(campaign.getId());
@@ -101,11 +105,6 @@ public class CampaignService {
         campaignResponse.setStatus(campaign.getStatus());
         return campaignResponse;
 
-    }
-
-    public void deleteCampaign(Long id) {
-        findCampaignEntityById(id);
-        campaignRepository.deleteById(id);
     }
 
 
