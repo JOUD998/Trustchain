@@ -8,6 +8,8 @@ public enum BlockchainEntityType {
 
     VOUCHER,
 
-    USER
+    USER,
+
+    MILESTONE
 
 }

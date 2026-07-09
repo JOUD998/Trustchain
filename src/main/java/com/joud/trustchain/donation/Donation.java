@@ -2,6 +2,7 @@ package com.joud.trustchain.donation;
 import com.joud.trustchain.campaign.Campaign;
 import com.joud.trustchain.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class Donation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Positive
     @Column(nullable = false)
     private BigDecimal amount;
 
@@ -26,10 +28,10 @@ public class Donation {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "campaign_id", nullable = false)
     private Campaign campaign;
 }

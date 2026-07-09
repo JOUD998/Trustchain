@@ -1,7 +1,12 @@
 package com.joud.trustchain.campaign;
+import com.joud.trustchain.blockchain_transaction.BlockchainEntityType;
+import com.joud.trustchain.blockchain_transaction.BlockchainTransactionService;
+import com.joud.trustchain.blockchain_transaction.BlockchainTransactionType;
 import com.joud.trustchain.campaign.dto.CampaignResponse;
 import com.joud.trustchain.campaign.dto.CreateCampaignRequest;
 import com.joud.trustchain.campaign.dto.UpdateCampaignRequest;
+import com.joud.trustchain.security.CurrentUserService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -13,10 +18,14 @@ import static com.joud.trustchain.campaign.CampaignStatus.ACTIVE;
 public class CampaignService {
 
     private final CampaignRepository campaignRepository;
+    private final BlockchainTransactionService blockchainTransactionService;
+    private final CurrentUserService currentUserService;
 
 
-    public CampaignService(CampaignRepository campaignRepository) {
+    public CampaignService(CampaignRepository campaignRepository, BlockchainTransactionService blockchainTransactionService, CurrentUserService currentUserService) {
         this.campaignRepository = campaignRepository;
+        this.blockchainTransactionService = blockchainTransactionService;
+        this.currentUserService = currentUserService;
     }
 
     public List<CampaignResponse> getAllCampaigns() {
@@ -37,7 +46,7 @@ public class CampaignService {
 
     }
 
-
+    @Transactional
     public CampaignResponse createCampaign(CreateCampaignRequest request)
     {
 
@@ -50,6 +59,14 @@ public class CampaignService {
                 .build();
 
         campaign = campaignRepository.save(campaign);
+        blockchainTransactionService.recordTransaction(
+                BlockchainTransactionType.CAMPAIGN_CREATED,
+                BlockchainEntityType.CAMPAIGN,
+                campaign.getId(),
+                "Campaign " + campaign.getId() + " was created",
+                currentUserService.getCurrentUser().getId()
+
+        );
         return mapToCampaignResponse(campaign);
 
     }
@@ -58,6 +75,7 @@ public class CampaignService {
         return mapToCampaignResponse(findCampaignEntityById(id));
     }
 
+    @Transactional
     public CampaignResponse updateCampaign(Long id, UpdateCampaignRequest request){
 
         Campaign campaign = findCampaignEntityById(id);
@@ -86,13 +104,31 @@ public class CampaignService {
         }
 
         campaign = campaignRepository.save(campaign);
+        blockchainTransactionService.recordTransaction(
+                BlockchainTransactionType.CAMPAIGN_UPDATED,
+                BlockchainEntityType.CAMPAIGN,
+                campaign.getId(),
+                "Campaign " + campaign.getId() + " was updated",
+                currentUserService.getCurrentUser().getId()
+
+        );
         return mapToCampaignResponse(campaign);
     }
 
 
-    public void deleteCampaign(Long id) {
-        findCampaignEntityById(id);
-        campaignRepository.deleteById(id);
+    // todo better to update this method from "delete Campaign" to "cancel Campaign" for transparency
+    @Transactional
+    public void deleteCampaign(Long campaignId) {
+        findCampaignEntityById(campaignId);
+        campaignRepository.deleteById(campaignId);
+        blockchainTransactionService.recordTransaction(
+                BlockchainTransactionType.CAMPAIGN_DELETED,
+                BlockchainEntityType.CAMPAIGN,
+                campaignId,
+                "Campaign " + campaignId + " was deleted",
+                currentUserService.getCurrentUser().getId()
+
+        );
     }
 
     private CampaignResponse mapToCampaignResponse(Campaign campaign) {

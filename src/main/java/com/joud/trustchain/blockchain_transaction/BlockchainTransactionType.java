@@ -10,6 +10,9 @@ public enum BlockchainTransactionType {
 
     CAMPAIGN_CREATED,
 
-    CAMPAIGN_UPDATED
+    CAMPAIGN_UPDATED,
 
+    CAMPAIGN_DELETED,
+
+    MILESTONE_CREATED
 }
