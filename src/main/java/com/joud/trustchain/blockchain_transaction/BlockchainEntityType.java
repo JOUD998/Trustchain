@@ -10,6 +10,8 @@ public enum BlockchainEntityType {
 
     USER,
 
-    MILESTONE
+    MILESTONE,
+
+    MILESTONE_VOTE
 
 }

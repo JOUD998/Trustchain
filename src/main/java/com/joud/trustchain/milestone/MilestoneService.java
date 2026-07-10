@@ -86,7 +86,10 @@ public class MilestoneService {
     }
 
 
-
+    public Milestone findMilestoneEntityById(Long id) {
+        return milestoneRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Milestone not found"));
+    }
 
     private MilestoneResponse mapToMilestoneResponse(Milestone milestone){
 

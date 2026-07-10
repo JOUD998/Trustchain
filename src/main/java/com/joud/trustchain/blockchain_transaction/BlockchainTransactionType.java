@@ -14,5 +14,7 @@ public enum BlockchainTransactionType {
 
     CAMPAIGN_DELETED,
 
-    MILESTONE_CREATED
+    MILESTONE_CREATED,
+
+    MILESTONE_VOTE_CAST
 }
