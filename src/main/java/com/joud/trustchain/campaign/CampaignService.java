@@ -116,16 +116,30 @@ public class CampaignService {
     }
 
 
-    // todo better to update this method from "delete Campaign" to "cancel Campaign" for transparency
     @Transactional
-    public void deleteCampaign(Long campaignId) {
-        findCampaignEntityById(campaignId);
-        campaignRepository.deleteById(campaignId);
+    public void cancelCampaign(Long campaignId) {
+        Campaign campaign = findCampaignEntityById(campaignId);
+
+
+        if (campaign.getStatus() == CampaignStatus.CANCELED) {
+
+            throw new RuntimeException("Campaign is already canceled");
+
+        }
+
+        if (campaign.getStatus() == CampaignStatus.COMPLETED) {
+
+            throw new RuntimeException("Completed campaign cannot be canceled");
+
+        }
+
+        campaign.setStatus(CampaignStatus.CANCELED);
+
         blockchainTransactionService.recordTransaction(
-                BlockchainTransactionType.CAMPAIGN_DELETED,
+                BlockchainTransactionType.CAMPAIGN_CANCELED,
                 BlockchainEntityType.CAMPAIGN,
                 campaignId,
-                "Campaign " + campaignId + " was deleted",
+                "Campaign " + campaignId + " was canceled",
                 currentUserService.getCurrentUser().getId()
 
         );

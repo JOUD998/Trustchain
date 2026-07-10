@@ -39,8 +39,8 @@ public class DonationService {
 
         if (campaign.getStatus() == CampaignStatus.COMPLETED)
             throw new RuntimeException("You can't Donate, Campaign is Completed");
-        if (campaign.getStatus() == CampaignStatus.CANCELLED)
-            throw new RuntimeException("You can't Donate, Campaign is Cancelled");
+        if (campaign.getStatus() == CampaignStatus.CANCELED)
+            throw new RuntimeException("You can't Donate, Campaign is Canceled");
 
         campaign.setCurrentAmount(campaign.getCurrentAmount().add(request.getAmount()));
 
@@ -66,8 +66,6 @@ public class DonationService {
 
         return mapToDonationResponse(donation);
     }
-
-
 
 
 

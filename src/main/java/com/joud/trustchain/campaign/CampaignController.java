@@ -42,9 +42,9 @@ public class CampaignController {
         return campaignService.updateCampaign(id,request);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteCampaign(@PathVariable Long id) {
-        campaignService.deleteCampaign(id);
+    @PatchMapping("/{id}/cancel")
+    public void cancelCampaign(@PathVariable Long id) {
+        campaignService.cancelCampaign(id);
     }
 
 
