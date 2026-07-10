@@ -67,7 +67,7 @@ public class UserService {
                 .fullName(request.getFullName())
                 .email(request.getEmail())
                 .password(request.getPassword())
-                .role(Role.CUSTOMER)
+                .role(Role.ADMIN)
                 .build();
         user = userRepository.save(user);
         UserResponse userResponse = mapToUserResponse(user);
