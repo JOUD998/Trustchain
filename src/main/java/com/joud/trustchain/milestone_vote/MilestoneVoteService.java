@@ -5,6 +5,7 @@ import com.joud.trustchain.blockchain_transaction.BlockchainTransactionService;
 import com.joud.trustchain.blockchain_transaction.BlockchainTransactionType;
 import com.joud.trustchain.milestone.Milestone;
 import com.joud.trustchain.milestone.MilestoneService;
+import com.joud.trustchain.milestone.MilestoneStatus;
 import com.joud.trustchain.milestone_vote.dto.CreateMilestoneVoteRequest;
 import com.joud.trustchain.milestone_vote.dto.MilestoneVoteResponse;
 import com.joud.trustchain.security.CurrentUserService;
@@ -66,7 +67,7 @@ public class MilestoneVoteService {
                         + " on milestone " + milestone.getId(),
                 currentUser.getId()
         );
-
+        approveMilestoneIfEnoughVotes(milestone, currentUser.getId());
         return mapToMilestoneVoteResponse(vote);
     }
 
@@ -80,6 +81,32 @@ public class MilestoneVoteService {
         }
 
         return responses;
+    }
+
+    private void approveMilestoneIfEnoughVotes(Milestone milestone, Long currentUserId) {
+
+        if (milestone.getStatus() == MilestoneStatus.APPROVED) {
+            return;
+        }
+
+        long approveVotes = milestoneVoteRepository.countByMilestone_IdAndDecision(
+                milestone.getId(),
+                MilestoneVoteDecision.APPROVE
+        );
+
+        if (approveVotes >= 2) {
+            milestone.setStatus(MilestoneStatus.APPROVED);
+            milestone.setUpdatedAt(LocalDateTime.now());
+
+            blockchainTransactionService.recordTransaction(
+                    BlockchainTransactionType.MILESTONE_APPROVED,
+                    BlockchainEntityType.MILESTONE,
+                    milestone.getId(),
+                    "Milestone '" + milestone.getTitle()
+                            + "' was approved after " + approveVotes + " approve votes",
+                    currentUserId
+            );
+        }
     }
 
     private MilestoneVoteResponse mapToMilestoneVoteResponse(MilestoneVote vote) {

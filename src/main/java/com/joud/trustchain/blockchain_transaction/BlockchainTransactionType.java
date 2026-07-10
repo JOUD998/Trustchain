@@ -16,5 +16,9 @@ public enum BlockchainTransactionType {
 
     MILESTONE_CREATED,
 
-    MILESTONE_VOTE_CAST
+    MILESTONE_VOTE_CAST,
+
+    MILESTONE_APPROVED,
+
+    PAYOUT_EXECUTED
 }
