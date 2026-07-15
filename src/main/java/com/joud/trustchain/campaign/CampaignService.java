@@ -7,6 +7,7 @@ import com.joud.trustchain.campaign.dto.CreateCampaignRequest;
 import com.joud.trustchain.campaign.dto.UpdateCampaignRequest;
 import com.joud.trustchain.security.CurrentUserService;
 import jakarta.transaction.Transactional;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class CampaignService {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZATION')")
     @Transactional
     public CampaignResponse createCampaign(CreateCampaignRequest request)
     {
@@ -75,6 +77,7 @@ public class CampaignService {
         return mapToCampaignResponse(findCampaignEntityById(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZATION')")
     @Transactional
     public CampaignResponse updateCampaign(Long id, UpdateCampaignRequest request){
 
@@ -116,6 +119,7 @@ public class CampaignService {
     }
 
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZATION')")
     @Transactional
     public void cancelCampaign(Long campaignId) {
         Campaign campaign = findCampaignEntityById(campaignId);

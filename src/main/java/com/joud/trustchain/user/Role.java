@@ -4,10 +4,12 @@ public enum Role {
 
     ADMIN,
 
-    COMPANY,
+    ORGANIZATION,
+
+    VALIDATOR,
 
     DONOR,
 
-    CUSTOMER
+    BENEFICIARY
 
 }

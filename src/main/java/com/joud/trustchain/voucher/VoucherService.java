@@ -10,6 +10,7 @@ import com.joud.trustchain.voucher.dto.CreateVoucherRequest;
 import com.joud.trustchain.voucher.dto.VerifyVoucherResponse;
 import com.joud.trustchain.voucher.dto.VoucherResponse;
 import jakarta.transaction.Transactional;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -34,6 +35,7 @@ public class VoucherService {
         this.currentUserService = currentUserService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZATION')")
     @Transactional
     public VoucherResponse createVoucher(CreateVoucherRequest request) {
 
@@ -104,7 +106,7 @@ public class VoucherService {
         return response;
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZATION')")
     @Transactional
     public VoucherResponse redeemVoucher(String code) {
         Voucher voucher = voucherRepository.findByCode(code)

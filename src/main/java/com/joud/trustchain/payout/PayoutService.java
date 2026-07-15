@@ -10,6 +10,7 @@ import com.joud.trustchain.payout.dto.CreatePayoutRequest;
 import com.joud.trustchain.payout.dto.PayoutResponse;
 import com.joud.trustchain.security.CurrentUserService;
 import com.joud.trustchain.user.User;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +62,7 @@ public class PayoutService {
         return responses;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZATION')")
     @Transactional
     public PayoutResponse createPayout(CreatePayoutRequest request) {
 

@@ -9,6 +9,7 @@ import com.joud.trustchain.donation.dto.DonationRequest;
 import com.joud.trustchain.donation.dto.DonationResponse;
 import com.joud.trustchain.security.CurrentUserService;
 import com.joud.trustchain.user.User;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ public class DonationService {
         this.blockchainTransactionService = blockchainTransactionService;
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'DONOR')")
     @Transactional
     public DonationResponse createDonation(DonationRequest request) {
 

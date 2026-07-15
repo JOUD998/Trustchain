@@ -10,6 +10,7 @@ import com.joud.trustchain.milestone_vote.dto.CreateMilestoneVoteRequest;
 import com.joud.trustchain.milestone_vote.dto.MilestoneVoteResponse;
 import com.joud.trustchain.security.CurrentUserService;
 import com.joud.trustchain.user.User;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,7 @@ public class MilestoneVoteService {
         this.blockchainTransactionService = blockchainTransactionService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'VALIDATOR')")
     @Transactional
     public MilestoneVoteResponse createVote(Long milestoneId, CreateMilestoneVoteRequest request) {
 

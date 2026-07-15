@@ -26,14 +26,6 @@ public class AuthService {
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
     }
-    private UserResponse mapToUserResponse(User user) {
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(user.getId());
-        userResponse.setFullName(user.getFullName());
-        userResponse.setEmail(user.getEmail());
-        userResponse.setRole(user.getRole());
-        return userResponse;
-    }
 
 
     public LoginResponse login(LoginRequest loginRequest) {
@@ -41,7 +33,7 @@ public class AuthService {
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new RuntimeException("User doesn't exist"));
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(),user.getPassword()))
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()))
             throw new RuntimeException("Wrong password");
 
         LoginResponse loginResponse = new LoginResponse();
@@ -67,7 +59,7 @@ public class AuthService {
                 .fullName(registerRequest.getFullName())
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .role(Role.ADMIN)
+                .role(Role.BENEFICIARY)
                 .build();
         user = userRepository.save(user);
 
@@ -76,6 +68,14 @@ public class AuthService {
         return loginResponse;
 
 
+    }
+    private UserResponse mapToUserResponse(User user) {
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(user.getId());
+        userResponse.setFullName(user.getFullName());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setRole(user.getRole());
+        return userResponse;
     }
 
 

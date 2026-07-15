@@ -7,6 +7,7 @@ import com.joud.trustchain.milestone.dto.CreateMilestoneRequest;
 import com.joud.trustchain.milestone.dto.MilestoneResponse;
 import com.joud.trustchain.security.CurrentUserService;
 import jakarta.transaction.Transactional;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -44,6 +45,7 @@ public class MilestoneService {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZATION')")
     @Transactional
     public MilestoneResponse createMilestone(CreateMilestoneRequest request){
 
