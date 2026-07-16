@@ -96,7 +96,13 @@ public class MilestoneVoteService {
                 MilestoneVoteDecision.APPROVE
         );
 
-        if (approveVotes >= 2) {
+        long rejectVotes = milestoneVoteRepository.countByMilestone_IdAndDecision(
+                milestone.getId(),
+                MilestoneVoteDecision.REJECT
+        );
+
+        if (approveVotes >= 2 && approveVotes > rejectVotes) {
+
             milestone.setStatus(MilestoneStatus.APPROVED);
             milestone.setUpdatedAt(LocalDateTime.now());
 
@@ -105,7 +111,9 @@ public class MilestoneVoteService {
                     BlockchainEntityType.MILESTONE,
                     milestone.getId(),
                     "Milestone '" + milestone.getTitle()
-                            + "' was approved after " + approveVotes + " approve votes",
+                            + "' was approved with "
+                            + approveVotes + " approve votes and "
+                            + rejectVotes + " reject votes",
                     currentUserId
             );
         }

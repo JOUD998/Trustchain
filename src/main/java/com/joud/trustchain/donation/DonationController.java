@@ -2,10 +2,10 @@ package com.joud.trustchain.donation;
 import com.joud.trustchain.donation.dto.DonationRequest;
 import com.joud.trustchain.donation.dto.DonationResponse;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/donations")
@@ -22,4 +22,21 @@ public class DonationController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZATION')")
+    @GetMapping
+    public List<DonationResponse> getAllDonations() {
+        return donationService.getAllDonations();
+    }
+
+    @GetMapping("/campaign/{campaignId}")
+
+    public List<DonationResponse> getDonationsByCampaignId(
+
+            @PathVariable Long campaignId
+
+    ) {
+
+        return donationService.getDonationsByCampaignId(campaignId);
+
+    }
 }

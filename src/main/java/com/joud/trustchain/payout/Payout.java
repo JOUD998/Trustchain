@@ -23,7 +23,16 @@ public class Payout {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "milestone_id", nullable = false)
+
+    @JoinColumn(
+
+            name = "milestone_id",
+
+            nullable = false,
+
+            unique = true
+
+    )
     private Milestone milestone;
 
     @NotNull

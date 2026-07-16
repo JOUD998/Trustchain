@@ -3,17 +3,19 @@ package com.joud.trustchain.payout;
 import com.joud.trustchain.blockchain_transaction.BlockchainEntityType;
 import com.joud.trustchain.blockchain_transaction.BlockchainTransactionService;
 import com.joud.trustchain.blockchain_transaction.BlockchainTransactionType;
+import com.joud.trustchain.campaign.Campaign;
 import com.joud.trustchain.milestone.Milestone;
 import com.joud.trustchain.milestone.MilestoneService;
 import com.joud.trustchain.milestone.MilestoneStatus;
 import com.joud.trustchain.payout.dto.CreatePayoutRequest;
 import com.joud.trustchain.payout.dto.PayoutResponse;
 import com.joud.trustchain.security.CurrentUserService;
+import com.joud.trustchain.user.Role;
 import com.joud.trustchain.user.User;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,19 +70,59 @@ public class PayoutService {
 
         User currentUser = currentUserService.getCurrentUser();
 
-        Milestone milestone = milestoneService.findMilestoneEntityById(request.getMilestoneId());
+        Milestone milestone =
+                milestoneService.findMilestoneEntityById(request.getMilestoneId());
+
+        Campaign campaign = milestone.getCampaign();
+
+        if (currentUser.getRole() != Role.ADMIN
+                && !campaign.getOrganization().getId().equals(currentUser.getId())) {
+
+            throw new RuntimeException(
+                    "You are not authorized to create payouts for this campaign"
+            );
+        }
 
         if (milestone.getStatus() != MilestoneStatus.APPROVED) {
-            throw new RuntimeException("Payout is only allowed for approved milestones");
+            throw new RuntimeException(
+                    "Payout is only allowed for approved milestones"
+            );
+        }
+
+        if (campaign.getCurrentAmount()
+                .compareTo(campaign.getTargetAmount()) < 0) {
+
+            throw new RuntimeException(
+                    "The campaign funding target has not been reached yet"
+            );
         }
 
         if (payoutRepository.existsByMilestone_Id(milestone.getId())) {
-            throw new RuntimeException("Payout already exists for this milestone");
+            throw new RuntimeException(
+                    "Payout already exists for this milestone"
+            );
+        }
+
+
+
+        BigDecimal alreadyPaidAmount = payoutRepository
+                .findAllByMilestone_Campaign_Id(campaign.getId())
+                .stream()
+                .map(Payout::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal availableAmount =
+                campaign.getCurrentAmount().subtract(alreadyPaidAmount);
+
+        if (availableAmount.compareTo(milestone.getAmount()) < 0) {
+            throw new RuntimeException(
+                    "Insufficient available campaign funds for this payout"
+            );
         }
 
         Payout payout = Payout.builder()
                 .milestone(milestone)
-                .amount(request.getAmount())
+                .amount(milestone.getAmount())
                 .status(PayoutStatus.EXECUTED)
                 .createdAt(LocalDateTime.now())
                 .executedAt(LocalDateTime.now())
@@ -98,7 +140,7 @@ public class PayoutService {
                 payout.getId(),
                 "Payout of " + payout.getAmount()
                         + " was executed for milestone " + milestone.getId()
-                        + " of campaign " + milestone.getCampaign().getId(),
+                        + " of campaign " + campaign.getId(),
                 currentUser.getId()
         );
 

@@ -11,4 +11,6 @@ public interface MilestoneVoteRepository extends JpaRepository<MilestoneVote, Lo
     List<MilestoneVote> findAllByMilestone_Id(Long milestoneId);
 
     long countByMilestone_IdAndDecision(Long milestoneId, MilestoneVoteDecision decision);
+
+
 }

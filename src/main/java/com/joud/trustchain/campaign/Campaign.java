@@ -1,4 +1,5 @@
 package com.joud.trustchain.campaign;
+import com.joud.trustchain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -31,5 +32,9 @@ public class Campaign {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CampaignStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "organization_id", nullable = false)
+    private User organization;
 
 }

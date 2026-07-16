@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class DonationService {
@@ -69,6 +70,25 @@ public class DonationService {
     }
 
 
+    public List<DonationResponse> getAllDonations() {
+
+        return donationRepository.findAll()
+                .stream()
+                .map(this::mapToDonationResponse)
+                .toList();
+    }
+
+    public List<DonationResponse> getDonationsByCampaignId(Long campaignId) {
+
+        if (!campaignRepository.existsById(campaignId)) {
+            throw new RuntimeException("Campaign not found");
+        }
+
+        return donationRepository.findAllByCampaign_Id(campaignId)
+                .stream()
+                .map(this::mapToDonationResponse)
+                .toList();
+    }
 
     private DonationResponse mapToDonationResponse(Donation donation) {
         DonationResponse donationResponse = new DonationResponse();

@@ -6,6 +6,8 @@ import com.joud.trustchain.campaign.dto.CampaignResponse;
 import com.joud.trustchain.campaign.dto.CreateCampaignRequest;
 import com.joud.trustchain.campaign.dto.UpdateCampaignRequest;
 import com.joud.trustchain.security.CurrentUserService;
+import com.joud.trustchain.user.Role;
+import com.joud.trustchain.user.User;
 import jakarta.transaction.Transactional;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -49,28 +51,30 @@ public class CampaignService {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZATION')")
     @Transactional
-    public CampaignResponse createCampaign(CreateCampaignRequest request)
-    {
+    public CampaignResponse createCampaign(CreateCampaignRequest request) {
+
+        User currentUser = currentUserService.getCurrentUser();
 
         Campaign campaign = Campaign.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .targetAmount(request.getTargetAmount())
-                .currentAmount(BigDecimal.valueOf(0))
+                .currentAmount(BigDecimal.ZERO)
                 .status(ACTIVE)
+                .organization(currentUser)
                 .build();
 
         campaign = campaignRepository.save(campaign);
+
         blockchainTransactionService.recordTransaction(
                 BlockchainTransactionType.CAMPAIGN_CREATED,
                 BlockchainEntityType.CAMPAIGN,
                 campaign.getId(),
                 "Campaign " + campaign.getId() + " was created",
-                currentUserService.getCurrentUser().getId()
-
+                currentUser.getId()
         );
-        return mapToCampaignResponse(campaign);
 
+        return mapToCampaignResponse(campaign);
     }
 
     public CampaignResponse getCampaignById(Long id) {
@@ -81,7 +85,9 @@ public class CampaignService {
     @Transactional
     public CampaignResponse updateCampaign(Long id, UpdateCampaignRequest request){
 
+        User currentUser = currentUserService.getCurrentUser();
         Campaign campaign = findCampaignEntityById(id);
+        validateCampaignOwnership(campaign, currentUser);
 
         if (request.getTitle() != null){
             if(!request.getTitle().isBlank()){
@@ -102,9 +108,7 @@ public class CampaignService {
             campaign.setTargetAmount(request.getTargetAmount());
 
         }
-        if (request.getStatus() != null){
-            campaign.setStatus(request.getStatus());
-        }
+
 
         campaign = campaignRepository.save(campaign);
         blockchainTransactionService.recordTransaction(
@@ -112,7 +116,7 @@ public class CampaignService {
                 BlockchainEntityType.CAMPAIGN,
                 campaign.getId(),
                 "Campaign " + campaign.getId() + " was updated",
-                currentUserService.getCurrentUser().getId()
+                currentUser.getId()
 
         );
         return mapToCampaignResponse(campaign);
@@ -122,8 +126,9 @@ public class CampaignService {
     @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZATION')")
     @Transactional
     public void cancelCampaign(Long campaignId) {
+        User currentUser = currentUserService.getCurrentUser();
         Campaign campaign = findCampaignEntityById(campaignId);
-
+        validateCampaignOwnership(campaign, currentUser);
 
         if (campaign.getStatus() == CampaignStatus.CANCELED) {
 
@@ -144,9 +149,20 @@ public class CampaignService {
                 BlockchainEntityType.CAMPAIGN,
                 campaignId,
                 "Campaign " + campaignId + " was canceled",
-                currentUserService.getCurrentUser().getId()
+                currentUser.getId()
 
         );
+    }
+
+    private void validateCampaignOwnership(Campaign campaign, User currentUser) {
+
+        if (currentUser.getRole() != Role.ADMIN
+                && !campaign.getOrganization().getId().equals(currentUser.getId())) {
+
+            throw new RuntimeException(
+                    "You are not authorized to manage this campaign"
+            );
+        }
     }
 
     private CampaignResponse mapToCampaignResponse(Campaign campaign) {
@@ -157,6 +173,8 @@ public class CampaignService {
         campaignResponse.setCurrentAmount(campaign.getCurrentAmount());
         campaignResponse.setTargetAmount(campaign.getTargetAmount());
         campaignResponse.setStatus(campaign.getStatus());
+        campaignResponse.setOrganizationId(campaign.getOrganization().getId());
+        campaignResponse.setOrganizationName(campaign.getOrganization().getFullName());
         return campaignResponse;
 
     }
