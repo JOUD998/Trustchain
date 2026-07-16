@@ -243,18 +243,7 @@ The project documentation includes:
 - Smart Contract Integration
 - Hyperledger Fabric Integration
 
----
 
-## 👥 Authors
-
-- Joud Nassar
-- Kevin Zuber
-- Wael Eskeif
-- Mohammed Tarek D.
-
-**Supervisor**
-
-Prof. Dr. Christoph Thiel
 
 ---
 
