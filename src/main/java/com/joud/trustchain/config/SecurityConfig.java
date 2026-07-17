@@ -1,5 +1,4 @@
 package com.joud.trustchain.config;
-
 import com.joud.trustchain.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
